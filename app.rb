@@ -15,7 +15,7 @@ end
 
 class Maillist
   def self.add_list_member(address)
-   ::RestClient.post("https://api:#{ENV['mailgun_api_key']}@api.mailgun.net/v2/lists/nolist@hooopo.mailgun.org/members",
+   ::RestClient.post("https://api:#{ENV['mailgun_api_key']}@api.mailgun.net/v2/lists/#{ENV['mailgun_list_address']}/members",
       :subscribed => true,
       :address => address,
       :name => 'Bob Bar',
@@ -34,10 +34,10 @@ class App < Sinatra::Base
       html << items.map{|item| item["address"].sub(/\A(..)../, "\\1**")}.join("<br />")
 
       html << "<h1>Subscribe List:</h1>"
-      html << "Send Email To: join-list@hooopo.mailgun.org"
+      html << "Send Email To: #{ENV['mailgun_join_list_address']}"
 
       html << "<h1>Create Post In List:</h1>"
-      html << "Send Email To: nolist@hooopo.mailgun.org"
+      html << "Send Email To: #{ENV['mailgun_list_address']}"
 
       html << "<h1>Help:</h1>"
       html << "Send Email To: hoooopo@gmail.com"
