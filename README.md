@@ -30,7 +30,7 @@ Enable Unsubscribe: 在这里（https://mailgun.net/cp/unsubscribes）勾选退�
 heroku config:add mailgun_api_key=your_api_key
 heroku config:add mailgun_list_address=nolist@hooopo.mailgun.org
 heroku config:add mailgun_join_list_address=join-list@hooopo.mailgun.org 
-heroku config:add mailgun_unsubscribe_address=unsubscribe-list@hooopo.mailgun.org
+heroku config:add mailgun_unsubscribe_list_address=unsubscribe-list@hooopo.mailgun.org
 ```
 
 ## Referers
