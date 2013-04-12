@@ -34,11 +34,10 @@ class Maillist
  end
 
  def self.unsubscribe(address)
-  ::RestClient.post "https://api:#{ENV['mailgun_api_key']}"\
-  "@api.mailgun.net/v2/#{ENV['mailgun_list_address']}/unsubscribes",
-  :address => address,
-  :tag => '*'
-end
+   ::RestClient.post "https://api:#{ENV['mailgun_api_key']}@api.mailgun.net/v2/#{ENV['mailgun_list_address'].split("@").last}/unsubscribes",
+   :address => address,
+   :tag => ENV['mailgun_list_address'].split("@").first
+ end
 end
 
 class App < Sinatra::Base
