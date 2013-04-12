@@ -3,7 +3,7 @@ require 'sinatra/base'
 require 'incoming'
 require 'rest-client'
 
-class EmailReceiver < Incoming::Strategies::Mailgun
+class JoinListReceiver < Incoming::Strategies::Mailgun
   setup :api_key => ENV["mailgun_api_key"]
 
   def receive(mail)
@@ -13,15 +13,32 @@ class EmailReceiver < Incoming::Strategies::Mailgun
   end
 end
 
+class UnsubscribeListReceiver < Incoming::Strategies::Mailgun
+  setup :api_key => ENV["mailgun_api_key"]
+
+  def receive(mail)
+    from_address = mail.from.to_a.first
+    # to   = mail.to.to_a.first
+    Maillist.unsubscribe(from_address)
+  end
+end
+
 class Maillist
   def self.add_list_member(address)
    ::RestClient.post("https://api:#{ENV['mailgun_api_key']}@api.mailgun.net/v2/lists/#{ENV['mailgun_list_address']}/members",
-      :subscribed => true,
-      :address => address,
-      :name => 'Bob Bar',
-      :description => 'Developer',
-      :vars => '{"age": 26}')
-  end
+    :subscribed => true,
+    :address => address,
+    :name => 'Bob Bar',
+    :description => 'Developer',
+    :vars => '{"age": 26}')
+ end
+
+ def self.unsubscribe(address)
+  ::RestClient.post "https://api:#{ENV['mailgun_api_key']}"\
+  "@api.mailgun.net/v2/#{ENV['mailgun_list_address']}/unsubscribes",
+  :address => address,
+  :tag => '*'
+end
 end
 
 class App < Sinatra::Base
@@ -37,7 +54,7 @@ class App < Sinatra::Base
       html << "Send Email To: #{ENV['mailgun_join_list_address']}"
       
       html << "<h1>Unsubscribe List:</h1>"
-      html << "Click Unsubscribe link from mail you recieved in the footer"
+      html << "Send Email To: #{ENV['mailgun_unsubscribe_list_address']}"
 
       html << "<h1>Create Post In List:</h1>"
       html << "Send Email To: #{ENV['mailgun_list_address']}"
@@ -50,7 +67,15 @@ class App < Sinatra::Base
   end
 
   post '/emails' do
-    if EmailReceiver.receive(request)
+    if JoinListReceiver.receive(request)
+      "ok"
+    else
+      "rejected"
+    end
+  end
+
+  post "/unsubscribe" do
+    if UnsubscribeListReceiver.receive(request)
       "ok"
     else
       "rejected"
