@@ -35,6 +35,9 @@ class App < Sinatra::Base
 
       html << "<h1>Subscribe List:</h1>"
       html << "Send Email To: #{ENV['mailgun_join_list_address']}"
+      
+      html << "<h1>Unsubscribe List:</h1>"
+      html << "Click Unsubscribe link from mail you recieved in the footer"
 
       html << "<h1>Create Post In List:</h1>"
       html << "Send Email To: #{ENV['mailgun_list_address']}"

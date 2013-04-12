@@ -17,6 +17,8 @@ export mailgun_join_list_address=join-list@hooopo.mailgun.org
 # 设置mailgun join list address 和 实际部署URL地址：
 # https://mailgun.net/cp/routes
 match_recipient("join-list@hooopo.mailgun.org")	forward("http://nolist.herokuapp.com/emails")	
+
+Enable Unsubscribe: 在这里（https://mailgun.net/cp/unsubscribes）勾选退订，点击编辑可以修改退订链接描述
 ```
 
 ## Heroku Setup
